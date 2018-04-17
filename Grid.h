@@ -1,13 +1,9 @@
 #ifndef GRID_H
 #define GRID_H
 
-#include <iostream>
-using namespace std;
-
 template<class T>
 class Grid {
     public:
-        Grid();
         Grid(const int dimensions);
         void populate(const T& data);
 
@@ -20,22 +16,12 @@ class Grid {
 
 
 // ============================================================================
-// Grid.
-//
-// Default constructor.
-// ============================================================================
-template<class T>
-Grid::Grid() {
-
-}
-
-// ============================================================================
 // Grid(int).
 //
 // Overloaded constructor.
 // ============================================================================
 template<class T>
-Grid::Grid(const int dimensions) {
+Grid<T>::Grid(const int dimensions) {
 
 }
 
@@ -44,7 +30,8 @@ Grid::Grid(const int dimensions) {
 //
 // Populates the grid with T data.
 // ============================================================================
-void Grid::populate(const T& data) {
+template<class T>
+void Grid<T>::populate(const T& data) {
 
 }
 
@@ -53,7 +40,8 @@ void Grid::populate(const T& data) {
 //
 // Builds the grid of dimensions.
 // ============================================================================
-void Grid::build() {
+template<class T>
+void Grid<T>::build() {
 
 }
 
