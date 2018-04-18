@@ -22,7 +22,7 @@ const string ERROR = "Something went totally wrong, please restart the game.";
 // ============================================================================
 // Function prototypes.
 // ============================================================================
-vector<int> getPuzzleFromFile(char);
+vector<char> getPuzzleFromFile(char);
 char printMenu();
 bool validateLevel(string);
 void printErrorAndExit(string);
@@ -42,12 +42,12 @@ int main(void) {
     // ========================================================================
     // Create the table and load the puzzle.
     // ========================================================================
-    GridTable<int> table(ROWS, COLS);
+    GridTable<char> table(ROWS, COLS);
 
     // ========================================================================
     // Load puzzle from file based on difficulty level.
     // ========================================================================
-    vector<int> puzzle = getPuzzleFromFile(c);
+    vector<char> puzzle = getPuzzleFromFile(c);
     table.populate(puzzle);
 
     // ========================================================================
@@ -66,9 +66,9 @@ int main(void) {
 // Input -> the difficulty level.
 // Output -> An array of ints containing the puzzle.
 // ============================================================================
-vector<int> getPuzzleFromFile(char difficulty) {
+vector<char> getPuzzleFromFile(char difficulty) {
     ifstream readFromFile;
-    vector<int> puzzleFromFile;
+    vector<char> puzzleFromFile;
     char c;
 
     // Open the correct puzzle.
@@ -100,12 +100,12 @@ vector<int> getPuzzleFromFile(char difficulty) {
     while(readFromFile >> c) {
         if (c == ',') continue;
         if (c == 'x') {
-            puzzleFromFile.push_back(-1);
+            puzzleFromFile.push_back(' ');
             continue;
         }
 
         // Conversion from char to int.
-        puzzleFromFile.push_back(c - '0');
+        puzzleFromFile.push_back(c);
     }
 
     // Close the file stream.

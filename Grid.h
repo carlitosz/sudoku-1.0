@@ -21,6 +21,7 @@
 #define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
 #define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
 #define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
+// ============================================================================
 
 #include <iostream>
 #include <vector>
@@ -53,11 +54,11 @@ Grid<T>::Grid(const int rows, const int cols) {
     numCols = cols;
 
     // Create array of pointers.
-    columns = new int * [rows];
+    columns = new char * [rows];
 
     // Create rows.
     for (int i = 0; i < cols; ++i) {
-        columns[i] = new int[cols];
+        columns[i] = new char[cols];
     }
 }
 
@@ -68,6 +69,7 @@ Grid<T>::Grid(const int rows, const int cols) {
 // ============================================================================
 template<class T>
 void Grid<T>::populate(const vector<T> data) {
+
 }
 
 // ============================================================================
