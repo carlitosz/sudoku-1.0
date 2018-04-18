@@ -36,12 +36,21 @@ int main(void) {
     // Welcome menu.
     // ========================================================================
     cout << "\n\n";
-    cout << " * * * * * * * * * Welcome to Sudoku! * * * * * * * * * " << endl;
+    cout << FGREY_PURPLE;
+    cout << " * * * * * * * * * ";
+    cout << " Welcome to Sudoku ";
+    cout << " * * * * * * * * * " << RST << endl << endl;
+    cout << endl;
+    cout << FBLACK_GREEN;
+    cout << "Choose your level of difficulty from the following menu";
+    cout << RST;
+    cout << endl << endl;
+    cout << RST;
     char c = printMenu();
 
     if (c == 'q') {
         cout << endl << endl;
-        cout << "* * * * Thanks for playing Sudoku! * * * * " << endl;
+        cout << FGREY_PURPLE << "* Thanks for playing Sudoku! * " << RST << endl;
         exit(1);
     }
 
@@ -130,12 +139,12 @@ char printMenu() {
     string userInput = "";
 
     while (validateLevel(userInput) == false) {
-        cout << "e)asy\n";
-        cout << "i)ntermediate\n";
-        cout << "d)ifficultn\n";
-        cout << "r)eally hard\n";
-        cout << "q)uit\n\n";
-        cout << "Please enter your level (e, i, d, r, q): ";
+        cout << FBLACK_GREEN << "e)asy" << RST << endl;
+        cout << FBLACK_GREEN << "i)ntermediate" << RST << endl;
+        cout << FBLACK_GREEN << "d)ifficultn" << RST << endl;
+        cout << FBLACK_GREEN << "r)eally hard" << RST << endl;
+        cout << FBLACK_GREEN << "q)uit" << RST << endl << endl;
+        cout << FBLACK_GREEN << "Please enter your level (e, i, d, r, q): " << RST;
         cin >> userInput;
     }
 
