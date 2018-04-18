@@ -22,7 +22,7 @@ const string ERROR = "Something went totally wrong, please restart the game.";
 // ============================================================================
 // Function prototypes.
 // ============================================================================
-vector<char> getPuzzleFromFile(char);
+vector<vector<char> > getPuzzleFromFile(char);
 char printMenu();
 bool validateLevel(string);
 void printErrorAndExit(string);
@@ -39,6 +39,12 @@ int main(void) {
     cout << " * * * * * * * * * Welcome to Sudoku! * * * * * * * * * " << endl;
     char c = printMenu();
 
+    if (c == 'q') {
+        cout << endl << endl;
+        cout << "* * * * Thanks for playing Sudoku! * * * * " << endl;
+        exit(1);
+    }
+
     // ========================================================================
     // Create the table and load the puzzle.
     // ========================================================================
@@ -47,18 +53,16 @@ int main(void) {
     // ========================================================================
     // Load puzzle from file based on difficulty level.
     // ========================================================================
-    vector<char> puzzle = getPuzzleFromFile(c);
+    vector<vector<char> > puzzle = getPuzzleFromFile(c);
     table.populate(puzzle);
 
     // ========================================================================
     // Print table.
     // ========================================================================
-    // table.print();
+    table.printTable();
 
     return 0;
 }
-
-
 
 // ============================================================================
 // getPuzzleFromFile.
@@ -66,9 +70,10 @@ int main(void) {
 // Input -> the difficulty level.
 // Output -> An array of ints containing the puzzle.
 // ============================================================================
-vector<char> getPuzzleFromFile(char difficulty) {
+vector<vector<char> > getPuzzleFromFile(char difficulty) {
+    static vector<vector<char> > puzzle(ROWS, vector<char>(COLS));
     ifstream readFromFile;
-    vector<char> puzzleFromFile;
+    string line;
     char c;
 
     // Open the correct puzzle.
@@ -95,23 +100,23 @@ vector<char> getPuzzleFromFile(char difficulty) {
         printErrorAndExit(ERROR);
     }
 
-    // Insert data into vector.
-    // Insert -1 where no value is present.
-    while(readFromFile >> c) {
-        if (c == ',') continue;
-        if (c == 'x') {
-            puzzleFromFile.push_back(' ');
-            continue;
+    int row = 0;
+    while (!readFromFile.eof()) {
+        getline(readFromFile, line);
+
+        for (int col = 0; col < line.size(); ++col) {
+            c = line.at(col);
+            if (c == 'x') c = ' ';
+            puzzle[row][col] = c;
         }
 
-        // Conversion from char to int.
-        puzzleFromFile.push_back(c);
+        row++;
     }
 
     // Close the file stream.
     readFromFile.close();
 
-    return puzzleFromFile;
+    return puzzle;
 }
 
 
@@ -128,9 +133,9 @@ char printMenu() {
         cout << "e)asy\n";
         cout << "i)ntermediate\n";
         cout << "d)ifficultn\n";
-        cout << "r)eally hard\n\n";
+        cout << "r)eally hard\n";
         cout << "q)uit\n\n";
-        cout << "Please enter your level (e, i, d, r): ";
+        cout << "Please enter your level (e, i, d, r, q): ";
         cin >> userInput;
     }
 
@@ -150,7 +155,7 @@ bool validateLevel(string input) {
 
     // Valid input.
     char c = input.at(0);
-    if (c == 'e' || c == 'i' || c == 'd' || c == 'r') return true;
+    if (c == 'e' || c == 'i' || c == 'd' || c == 'r' || c == 'q') return true;
 
     // Invalid input.
     cout << "\n\nInvalid input, please try again...\n\n" << endl;

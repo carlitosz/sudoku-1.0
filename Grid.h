@@ -1,28 +1,6 @@
 #ifndef GRID_H
 #define GRID_H
 
-// ============================================================================
-// Colors to decorate the grid.
-// ============================================================================
-#define RESET   "\033[0m"
-#define BLACK   "\033[30m"      /* Black */
-#define RED     "\033[31m"      /* Red */
-#define GREEN   "\033[32m"      /* Green */
-#define YELLOW  "\033[33m"      /* Yellow */
-#define BLUE    "\033[34m"      /* Blue */
-#define MAGENTA "\033[35m"      /* Magenta */
-#define CYAN    "\033[36m"      /* Cyan */
-#define WHITE   "\033[37m"      /* White */
-#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
-#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
-#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
-#define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
-#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
-#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
-#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
-#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
-// ============================================================================
-
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -30,15 +8,22 @@ using namespace std;
 template<class T>
 class Grid {
     public:
+        Grid() { columns = NULL; }
         Grid(const int rows, const int cols);
-        void populate(const vector<T> data);
+        void populate(const vector<vector<T> > data);
+        int getNumRows() { return numRows; }
+        int getNumCols() { return numCols; }
+        void setNumRows(int r) { numRows = r; }
+        void setNumCols(int c) { numCols = c; }
 
-    private:
-        void build();
+        virtual void printTable() = 0;
+        virtual void printHorizontalMargin() = 0;
+        virtual void printVerticalMargin() = 0;
 
+    protected:
+        T **columns;
         int numRows;
         int numCols;
-        T **columns;
 };
 
 
@@ -54,32 +39,26 @@ Grid<T>::Grid(const int rows, const int cols) {
     numCols = cols;
 
     // Create array of pointers.
-    columns = new char * [rows];
+    columns = new T * [rows];
 
     // Create rows.
     for (int i = 0; i < cols; ++i) {
-        columns[i] = new char[cols];
+        columns[i] = new T[cols];
     }
 }
 
 // ============================================================================
 // Populate.
 //
-// Populates the grid with T data.
+// Populates the 2D grid with T data.
 // ============================================================================
 template<class T>
-void Grid<T>::populate(const vector<T> data) {
-
-}
-
-// ============================================================================
-// Build.
-//
-// Builds the grid of dimensions.
-// ============================================================================
-template<class T>
-void Grid<T>::build() {
-
+void Grid<T>::populate(const vector<vector<T> > data) {
+    for (int i = 0; i < numRows; ++i) {
+        for (int j = 0; j < numCols; ++j) {
+            columns[i][j] = data[i][j];
+        }
+    }
 }
 
 #endif /* GRID_H */
