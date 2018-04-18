@@ -12,9 +12,17 @@ using namespace std;
 #include "GridTable.h"
 
 // ============================================================================
+// Globals
+// ============================================================================
+const int ROWS = 9;
+const int COLS = 9;
+const int TOTAL = ROWS * COLS;
+const string ERROR = "Something went totally wrong, please restart the game.";
+
+// ============================================================================
 // Function prototypes.
 // ============================================================================
-vector<int> loadPuzzle(char);
+vector<int> getPuzzleFromFile(char);
 char printMenu();
 bool validateLevel(string);
 void printErrorAndExit(string);
@@ -32,14 +40,20 @@ int main(void) {
     char c = printMenu();
 
     // ========================================================================
-    // Load puzzle from file based on difficulty level.
-    // ========================================================================
-    vector<int> puzzle = loadPuzzle(c);
-
-    // ========================================================================
     // Create the table and load the puzzle.
     // ========================================================================
-    GridTable<int> table(9);
+    GridTable<int> table(ROWS, COLS);
+
+    // ========================================================================
+    // Load puzzle from file based on difficulty level.
+    // ========================================================================
+    vector<int> puzzle = getPuzzleFromFile(c);
+    table.populate(puzzle);
+
+    // ========================================================================
+    // Print table.
+    // ========================================================================
+    // table.print();
 
     return 0;
 }
@@ -47,36 +61,57 @@ int main(void) {
 
 
 // ============================================================================
-// loadPuzzle.
+// getPuzzleFromFile.
 //
 // Input -> the difficulty level.
 // Output -> An array of ints containing the puzzle.
 // ============================================================================
-vector<int> loadPuzzle(char difficulty) {
+vector<int> getPuzzleFromFile(char difficulty) {
     ifstream readFromFile;
-    vector<int> puzzle;
-    int number;
+    vector<int> puzzleFromFile;
+    char c;
 
+    // Open the correct puzzle.
     switch (difficulty) {
         case 'e':
-            readFromFile.open("easy.txt");
+            readFromFile.open("puzzles/easy.txt");
             break;
         case 'i':
-            readFromFile.open("intermediate.txt");
+            readFromFile.open("puzzles/intermediate.txt");
             break;
         case 'd':
-            readFromFile.open("difficult.txt");
+            readFromFile.open("puzzles/difficult.txt");
             break;
         case 'r':
-            readFromFile.open("really_hard.txt");
+            readFromFile.open("puzzles/expert.txt");
             break;
         default:
-            printErrorAndExit(
-                "Something went totally wrong, please restart the game."
-            );
+            printErrorAndExit(ERROR);
     }
 
-    return puzzle;
+    // Check successful open.
+    if (!readFromFile.is_open()) {
+        cout << "Could not read from file.\n\n\n" << endl;
+        printErrorAndExit(ERROR);
+    }
+
+    // Insert data into vector.
+    // Insert -1 where no value is present.
+    while(readFromFile >> c) {
+        if (c == ',') continue;
+        if (c == 'x') {
+            puzzleFromFile.push_back(-1);
+            continue;
+        }
+
+        // Conversion from char to int.
+        puzzleFromFile.push_back(c - '0');
+    }
+
+    // Close the file stream.
+    readFromFile.close();
+
+    return puzzleFromFile;
 }
 
 
@@ -87,7 +122,6 @@ vector<int> loadPuzzle(char difficulty) {
 // Output -> returns the user input as a character i.e. 'e', 'i' etc...
 // ============================================================================
 char printMenu() {
-    bool isValid = false;
     string userInput = "";
 
     while (validateLevel(userInput) == false) {
@@ -95,6 +129,7 @@ char printMenu() {
         cout << "i)ntermediate\n";
         cout << "d)ifficultn\n";
         cout << "r)eally hard\n\n";
+        cout << "q)uit\n\n";
         cout << "Please enter your level (e, i, d, r): ";
         cin >> userInput;
     }
