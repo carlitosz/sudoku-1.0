@@ -61,6 +61,7 @@ void GridTable<T>::printTable() {
         printVerticalMargin();
         cout << endl;
     }
+
     printHorizontalMargin();
 }
 

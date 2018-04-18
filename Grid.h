@@ -15,6 +15,7 @@ class Grid {
         int getNumCols();
         void setNumRows(int r);
         void setNumCols(int c);
+        int getTotalElements() { return numRows * numCols; }
 
         virtual void printTable() = 0;
         virtual void printHorizontalMargin() = 0;
