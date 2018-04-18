@@ -1,16 +1,11 @@
 #ifndef GRID_TABLE_H
 #define GRID_TABLE_H
 
+#include "Colors.h"
 #include "Grid.h"
 
-const string FYELLOW_BLACK = "\033[43;30m";
-const string FBLACK_RED = "\033[40;30m";
-const string FRED_CYAN = "\033[41;36m";
-const string FGREY_PURPLE = "\033[45;37m";
-const string FBLACK_WHITE = "\033[47;30m";
-const string FBLACK_GREEN = "\033[30;42m";
-const string BOLD = "\033[1m";
-const string RST = "\033[0m";
+const int EMPTY = -1;
+const int POPULATED = -2;
 
 template<class T>
 class GridTable : public Grid<T> {
@@ -18,12 +13,15 @@ class GridTable : public Grid<T> {
         GridTable() { this->numRows = 0; this->numCols = 0; }
         GridTable(const int r, const int c) : Grid<T>(r, c) { };
         void printTable();
+        int getTotalEmpty();
+        int getTotalPopulated();
+        void insert(const char value, stack<char> coordinates);
+
     private:
+        int getTotalOfType(int);
         void printHorizontalMargin();
         void printVerticalMargin();
 };
-
-
 
 // ============================================================================
 // printTable.
@@ -86,6 +84,58 @@ template<class T>
 void GridTable<T>::printVerticalMargin() {
     string margin = "|";
     cout << FRED_CYAN << margin << RST;
+}
+
+// ============================================================================
+// getTotalEmpty.
+//
+// Input -> nothing.
+// Output -> the number of empty cells in the table.
+// ============================================================================
+template<class T>
+int GridTable<T>::getTotalEmpty() {
+    return getTotalOfType(EMPTY);
+}
+
+// ============================================================================
+// getTotalPopulated.
+//
+// Input -> nothing.
+// Output -> the number of populated cells in the table.
+// ============================================================================
+template<class T>
+int GridTable<T>::getTotalPopulated() {
+    return getTotalOfType(POPULATED);
+}
+
+// ============================================================================
+// getTotalOfType.
+//
+// Input -> the type to search for.
+// Output -> the total of the type.
+// ============================================================================
+template<class T>
+int GridTable<T>::getTotalOfType(const int type) {
+    int counter = 0;
+
+    // Count all empty cells.
+    for (int i = 0; i < this->numRows; ++i) {
+        for (int j = 0; j < this->numCols; ++j) {
+            if (this->columns[i][j] == 32) counter++;
+        }
+    }
+
+    // Check which type and return that number.
+    switch (type) {
+        case EMPTY:
+            return counter;
+        case POPULATED:
+            return (this->numRows * this->numCols) - counter;
+        default:
+            break;
+    }
+
+    return counter;
 }
 
 #endif /* GRID_TABLE_H */
