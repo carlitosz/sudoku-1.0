@@ -1,9 +1,19 @@
+// ============================================================================
+// Author: Carlos Zaragoza
+//
+// Description: This is the main driver for the Sudoku game on the command
+//              line. It creates a grid and grid table to support the graphical
+//              output of the sudoku game to the command line. Please review
+//              GridTable.h and Grid.h to view the implementation.
+// ============================================================================
+
 #include <iostream>
 #include <string>
 #include <stdlib.h>
 #include <ctype.h>
 #include <fstream>
 #include <vector>
+#include <unistd.h>
 #include <stack>
 using namespace std;
 
@@ -25,7 +35,7 @@ const string CHECKING = "Checking your puzzle for correctness, please wait...";
 // ============================================================================
 // Function prototypes.
 // ============================================================================
-vector<vector<char> > getPuzzleFromFile(char);
+vector<vector<char> > getPuzzleFromFile(char, bool);
 int fetchValue();
 void printInvalid();
 stack<char> fetchCoords();
@@ -68,19 +78,20 @@ int main(void) {
     // Load puzzle from file based on difficulty level.
     // ========================================================================
     GridTable<char> table(ROWS, COLS);
-    vector<vector<char> > puzzle = getPuzzleFromFile(c);
+    vector<vector<char> > puzzle = getPuzzleFromFile(c, false);
     table.populate(puzzle);
 
     // ========================================================================
     // Print table.
     // ========================================================================
-    table.printTable();
+    table.print();
 
     // ========================================================================
     // Loop the game.
     // ========================================================================
     char input = 'a';
     stack<char> coords;
+    bool inserted = false;
     char val;
     int x;
     int y;
@@ -98,9 +109,10 @@ int main(void) {
                 coords = fetchCoords();
 
                 table.insert(val, coords);
+                table.print();
                 break;
             case 'p':
-                table.printTable();
+                table.print();
                 break;
             case 'c':
                 checkSolution(c, table);
@@ -112,6 +124,7 @@ int main(void) {
 
     return 0;
 }
+
 
 // ============================================================================
 // fetchCoords.
@@ -126,12 +139,12 @@ stack<char> fetchCoords() {
     string y = "";
 
     while (validateCoord(x) == false) {
-        cout << "Enter X: ";
+        cout << FBLACK_GREEN << "Enter X: " << RST;
         cin >> x;
     }
 
     while (validateCoord(y) == false) {
-        cout << "Enter Y: ";
+        cout << FBLACK_GREEN << "Enter Y: " << RST;
         cin >> y;
     }
 
@@ -141,6 +154,7 @@ stack<char> fetchCoords() {
 
     return temp;
 }
+
 
 // ============================================================================
 // validateCoord.
@@ -157,6 +171,7 @@ bool validateCoord(string coord) {
 
     return true;
 }
+
 
 // ============================================================================
 // fetchValue.
@@ -175,6 +190,7 @@ int fetchValue() {
     return val.at(0);
 }
 
+
 // ============================================================================
 // validateValue.
 //
@@ -190,6 +206,7 @@ bool validateValue(string val) {
 
     return true;
 }
+
 
 // ============================================================================
 // checkSolution.
@@ -210,8 +227,7 @@ void checkSolution(char difficulty, GridTable<char>& t) {
     // Puzzle complete.
     if (empty == 0) {
         cout << FWHITE_GREEN << CHECKING << RST << endl;
-        // Check puzzle.
-        // Print if it's solved or not.
+        sleep(3);
     }
 }
 
@@ -228,6 +244,7 @@ void printMsgAndExit() {
     exit(1);
 }
 
+
 // ============================================================================
 // printInvalid()
 //
@@ -238,35 +255,43 @@ void printInvalid() {
     cout << FBLACK_RED << "Invalid input, please try again..." << RST << endl;
 }
 
+
 // ============================================================================
 // getPuzzleFromFile.
 //
 // Input -> the difficulty level.
 // Output -> An array of ints containing the puzzle.
 // ============================================================================
-vector<vector<char> > getPuzzleFromFile(char difficulty) {
+vector<vector<char> > getPuzzleFromFile(char difficulty, bool solution = false) {
     static vector<vector<char> > puzzle(ROWS, vector<char>(COLS));
     ifstream readFromFile;
     string line;
+    string filename;
     char c;
 
-    // Open the correct puzzle.
+    // Get correct puzzle
     switch (difficulty) {
         case 'e':
-            readFromFile.open("puzzles/easy.txt");
+            solution ? readFromFile.open("puzzles/easy_solution.txt") :
+                       readFromFile.open("puzzles/easy.txt");
             break;
         case 'i':
-            readFromFile.open("puzzles/intermediate.txt");
+            solution ? readFromFile.open("puzzles/intermediate_solution.txt") :
+                       readFromFile.open("puzzles/intermediate.txt");
             break;
         case 'd':
-            readFromFile.open("puzzles/difficult.txt");
+            solution ? readFromFile.open("puzzles/difficult_solution.txt") :
+                       readFromFile.open("puzzles/difficult.txt");
             break;
         case 'r':
-            readFromFile.open("puzzles/expert.txt");
+            solution ? readFromFile.open("puzzles/expert_solution.txt") :
+                       readFromFile.open("puzzles/expert.txt");
             break;
         default:
             printErrorAndExit(ERROR);
     }
+
+
 
     // Check successful open.
     if (!readFromFile.is_open()) {
@@ -293,6 +318,7 @@ vector<vector<char> > getPuzzleFromFile(char difficulty) {
     return puzzle;
 }
 
+
 // ============================================================================
 // printOptions.
 //
@@ -315,6 +341,7 @@ char printOptions() {
     return userInput.at(0);
 }
 
+
 // ============================================================================
 // validateOption.
 //
@@ -330,6 +357,7 @@ bool validateOption(string input) {
     cout << endl << endl << "Invalid input, please try again..." << endl << endl;
     return false;
 }
+
 
 // ============================================================================
 // printMenu.

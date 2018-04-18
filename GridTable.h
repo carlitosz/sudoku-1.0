@@ -1,3 +1,13 @@
+// ============================================================================
+// Author: Carlos Zaragoza
+//
+// Description: This is the GridTable that extends from the Grid.h class to 
+//              create a nice interface for better UX. It adds colors and other
+//              modifications to give the user a better experience. This class
+//              can be replaced by extending the Grid.h class and implementing
+//              your own. This way you can create your own table graphics.
+// ============================================================================
+
 #ifndef GRID_TABLE_H
 #define GRID_TABLE_H
 
@@ -12,25 +22,77 @@ class GridTable : public Grid<T> {
     public:
         GridTable() { this->numRows = 0; this->numCols = 0; }
         GridTable(const int r, const int c) : Grid<T>(r, c) { };
-        void printTable();
+        void print();
         int getTotalEmpty();
         int getTotalPopulated();
-        void insert(const char value, stack<char> coordinates);
+        void insert(const T&, stack<char>&);
 
     private:
+        void printInvalid();
+        bool validateUserInput(const string);
         int getTotalOfType(int);
         void printHorizontalMargin();
         void printVerticalMargin();
 };
 
 // ============================================================================
-// printTable.
+// validateUserInput.
+//
+// Input -> user's input
+// Output -> true if valid, else false.
+// ============================================================================
+template<class T>
+bool GridTable<T>::validateUserInput(const string input) {
+    if (input == "") return false;
+    if (input.size() > 1) {
+        printInvalid();
+        return false;
+    }
+
+    // if (input.at(0) < 49 || input.at(0) > 57) return false;
+    if (input.at(0) == 'y' || input.at(0) == 'n') return true;
+
+    return false;
+}
+
+// ============================================================================
+// insert.
+//
+// Input -> value - the new value to insert.
+// Input -> coordinates - the spot where to insert.
+// Output -> nothing.
+// ============================================================================
+template<class T>
+void GridTable<T>::insert(const T& value, stack<char>& coordinates) {
+    int x = coordinates.top() - 48;
+    coordinates.pop();
+    int y = coordinates.top() - 48;
+    coordinates.pop();
+
+    string userInput = "";
+    if (this->columns[x][y] != ' ') {
+        while (validateUserInput(userInput) == false) {
+            cout << FBLACK_RED << "Coordinates ["
+                 << x << ", " << y << "] contain a value."
+                 << "Overwrite? (y/n): " << RST;
+            cin >> userInput;
+        }
+
+        if (userInput.at(0) == 'n') return;
+        this->columns[x][y] = value;
+    }
+
+    this->columns[x][y] = value;
+}
+
+// ============================================================================
+// print.
 //
 // Input -> nothing.
 // Output -> prints the table to stdout.
 // ============================================================================
 template<class T>
-void GridTable<T>::printTable() {
+void GridTable<T>::print() {
     if (this->columns == NULL) {
         cout << "No data!" << endl;
         return;
@@ -136,6 +198,17 @@ int GridTable<T>::getTotalOfType(const int type) {
     }
 
     return counter;
+}
+
+// ============================================================================
+// printInvalid()
+//
+// Input -> nothing.
+// Output -> a message to stdout saying invalid input.
+// ============================================================================
+template<class T>
+void GridTable<T>::printInvalid() {
+    cout << FBLACK_RED << "Invalid input, please try again..." << RST << endl;
 }
 
 #endif /* GRID_TABLE_H */
