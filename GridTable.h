@@ -26,6 +26,7 @@ class GridTable : public Grid<T> {
         int getTotalEmpty();
         int getTotalPopulated();
         void insert(const T&, stack<char>&);
+        bool match(vector<vector<T> >&);
 
     private:
         void printInvalid();
@@ -34,6 +35,27 @@ class GridTable : public Grid<T> {
         void printHorizontalMargin();
         void printVerticalMargin();
 };
+// ============================================================================
+// match.
+//
+// Input -> a vector containing x by y data.
+// Output -> true if the vector is the same as the grid columns, else false.
+// ============================================================================
+template<class T>
+bool GridTable<T>::match(vector<vector<T> >& someVector) {
+    bool isValid = true;
+
+    for (int i = 0; i < this->numRows; ++i) {
+        for (int j = 0; j < this->numCols; ++j) {
+            if (someVector[i][j] != this->columns[i][j]) {
+                isValid = false;
+                break;
+            }
+        }
+    }
+
+    return isValid;
+}
 
 // ============================================================================
 // validateUserInput.
@@ -78,8 +100,14 @@ void GridTable<T>::insert(const T& value, stack<char>& coordinates) {
             cin >> userInput;
         }
 
-        if (userInput.at(0) == 'n') return;
-        this->columns[x][y] = value;
+        if (userInput.at(0) == 'n') {
+            cout << FBLACK_RED << "Value not inserted" << RST << endl;
+            return;
+        } else if (userInput.at(0) == 'y') {
+            cout << FBLACK_GREEN << "Value inserted!" << RST << endl;
+            this->columns[x][y] = value;
+            return;
+        }
     }
 
     this->columns[x][y] = value;

@@ -60,9 +60,9 @@ int main(void) {
     // ========================================================================
     cout << "\n\n";
     cout << FGREY_PURPLE;
-    cout << " * * * * * * * * * ";
+    cout << " * * * * * * * * * * * * * * * * * * ";
     cout << " Welcome to Sudoku ";
-    cout << " * * * * * * * * * " << RST << endl << endl;
+    cout << " * * * * * * * * * * * * * * * * * * " << RST << endl << endl;
     cout << endl;
     cout << FBLACK_GREEN;
     cout << "Choose your level of difficulty from the following menu";
@@ -78,7 +78,7 @@ int main(void) {
     // Load puzzle from file based on difficulty level.
     // ========================================================================
     GridTable<char> table(ROWS, COLS);
-    vector<vector<char> > puzzle = getPuzzleFromFile(c, false);
+    vector<vector<char> > puzzle = getPuzzleFromFile(c, true);
     table.populate(puzzle);
 
     // ========================================================================
@@ -107,7 +107,6 @@ int main(void) {
             case 'e':
                 val = fetchValue();
                 coords = fetchCoords();
-
                 table.insert(val, coords);
                 table.print();
                 break;
@@ -219,15 +218,35 @@ void checkSolution(char difficulty, GridTable<char>& t) {
     int empty = t.getTotalEmpty();
     int populated = t.getTotalPopulated();
 
+    cout << FBLACK_GREEN << CHECKING << RST << endl;
+
     // Puzzle not completed.
-    if (empty != populated) {
+    if (empty != 0) {
         cout << FWHITE_RED << INCOMPLETE << RST << endl;
     }
 
     // Puzzle complete.
     if (empty == 0) {
-        cout << FWHITE_GREEN << CHECKING << RST << endl;
-        sleep(3);
+        cout << endl << endl;
+        sleep(2);
+
+        // Get solution from file and match against current puzzle progress.
+        vector<vector<char> > solution = getPuzzleFromFile(difficulty, true);
+        if (t.match(solution) == false) {
+            cout << FWHITE_RED << "Sorry, it looks like the puzzle is "
+                 << " incorrect. Please skim for errors and check again."
+                 << RST << endl;
+
+            return;
+        }
+
+        cout << FGREY_PURPLE << " ********* Congratulations! ********* "
+             << RST << endl;
+        cout << FGREY_PURPLE << "You successfully completed the puzzle!"
+             << RST << endl;
+        cout << FGREY_PURPLE << "Thanks for playing!"
+             << RST << endl;
+        exit(1);
     }
 }
 
