@@ -1,8 +1,21 @@
+// ============================================================================
+// Author: Carlos Zaragoza
+//
+// Description: The Grid class creates 2 dimensional array for T data, and then
+//              populates the 2 dimensional array with that data. Any user that
+//              extends this class will have to implement a few functions to
+//              build a table for graphic representation of the grid.
+//              I provided an example called GridTable.h (may need refactoring)
+//              to give an idea about how to implement a table.
+// ============================================================================
+
 #ifndef GRID_H
 #define GRID_H
 
 #include <iostream>
+#include <string>
 #include <vector>
+#include <stack>
 using namespace std;
 
 template<class T>
@@ -16,16 +29,31 @@ class Grid {
         void setNumRows(int r);
         void setNumCols(int c);
         int getTotalElements() { return numRows * numCols; }
+        ~Grid();
 
-        virtual void printTable() = 0;
+        virtual void print() = 0;
         virtual void printHorizontalMargin() = 0;
         virtual void printVerticalMargin() = 0;
+        virtual void insert(const T&, stack<char>&) = 0;
 
     protected:
         T **columns;
         int numRows;
         int numCols;
 };
+
+// ============================================================================
+// destructor.
+// ============================================================================
+template<class T>
+Grid<T>::~Grid(){
+    for (int i = 0; i < numRows; ++i) {
+        delete [] columns[i];
+    }
+
+    delete [] columns;
+}
+
 
 // ============================================================================
 // setNumCols.
