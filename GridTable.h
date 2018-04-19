@@ -35,6 +35,8 @@ class GridTable : public Grid<T> {
         void printHorizontalMargin();
         void printVerticalMargin();
 };
+
+
 // ============================================================================
 // match.
 //
@@ -118,6 +120,8 @@ void GridTable<T>::insert(const T& value, stack<char>& coordinates) {
 //
 // Input -> nothing.
 // Output -> prints the table to stdout.
+//
+// Need to refactor this :|
 // ============================================================================
 template<class T>
 void GridTable<T>::print() {
