@@ -279,6 +279,7 @@ void printInvalid() {
 // getPuzzleFromFile.
 //
 // Input -> the difficulty level.
+// Input -> whether to retrieve the solution or not.
 // Output -> An array of ints containing the puzzle.
 // ============================================================================
 vector<vector<char> > getPuzzleFromFile(char difficulty, bool solution = false) {
@@ -309,8 +310,6 @@ vector<vector<char> > getPuzzleFromFile(char difficulty, bool solution = false) 
         default:
             printErrorAndExit(ERROR);
     }
-
-
 
     // Check successful open.
     if (!readFromFile.is_open()) {
@@ -390,7 +389,7 @@ char printMenu() {
     while (validateLevel(userInput) == false) {
         cout << FBLACK_GREEN << "e)asy" << RST << endl;
         cout << FBLACK_GREEN << "i)ntermediate" << RST << endl;
-        cout << FBLACK_GREEN << "d)ifficultn" << RST << endl;
+        cout << FBLACK_GREEN << "d)ifficult" << RST << endl;
         cout << FBLACK_GREEN << "r)eally hard" << RST << endl;
         cout << FBLACK_GREEN << "q)uit" << RST << endl << endl;
         cout << FBLACK_GREEN << "Please enter your level (e, i, d, r, q): "
