@@ -78,7 +78,7 @@ int main(void) {
     // Load puzzle from file based on difficulty level.
     // ========================================================================
     GridTable<char> table(ROWS, COLS);
-    vector<vector<char> > puzzle = getPuzzleFromFile(c, true);
+    vector<vector<char> > puzzle = getPuzzleFromFile(c, false);
     table.populate(puzzle);
 
     // ========================================================================
