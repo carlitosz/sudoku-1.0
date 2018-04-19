@@ -163,7 +163,7 @@ stack<char> fetchCoords() {
 // ============================================================================
 bool validateCoord(string coord) {
     if (coord == "") return false;
-    if (coord.size() > 1 || coord.at(0) < 48 || coord.at(0) > 57) {
+    if (coord.size() > 1 || coord.at(0) < 48 || coord.at(0) > 56) {
         printInvalid();
         return false;
     }
@@ -353,7 +353,7 @@ char printOptions() {
         cout << FBLACK_GREEN << "e)nter value" << RST << endl;
         cout << FBLACK_GREEN << "c)heck solution" << RST << endl;
         cout << FBLACK_GREEN << "q)uit game" << RST << endl << endl;
-        cout << FBLACK_GREEN << "Enter choice (p, e, q): " << RST;
+        cout << FBLACK_GREEN << "Enter choice (p, e, c, q): " << RST;
         cin >> userInput;
     }
 
